@@ -2,13 +2,17 @@ const routes = require("express").Router();
 
 const authMiddleware = require("./app/middleware/auth");
 const SessionController = require("./app/controllers/SessionController");
-const JsonController = require("./app/controllers/JsonController");
+const MoskitController = require("./app/controllers/MoskitController");
 
 // routes.post("/sessions", SessionController.store);
 // routes.get("/teste", JsonController.index)
 // routes.get("/check", JsonController.check)
-routes.get("/lead/:size(\\d+)?", JsonController.store);
-routes.get("/user/:size(\\d+)?", JsonController.usuario);
+routes.get("/", (req, res)=> {
+  res.send('hello word')
+})
+routes.get("/lead/:size(\\d+)?", MoskitController.store);
+routes.get("/user/:size(\\d+)?", MoskitController.usuario);
+routes.get("/grant", MoskitController.update_user);
 
 routes.use(authMiddleware);
 

@@ -1,7 +1,8 @@
 const { pipe } = require("../helpers");
 // const api = require('../../config/api')
 const axios = require("axios");
-const { username } = require("../../config/database");
+// const { username } = require("../../config/database");
+
 const api = axios.create({
   baseURL: "https://api.moskitcrm.com",
   headers: {
@@ -13,9 +14,7 @@ const api = axios.create({
 });
 
 const Moskit = (msgSuccess) => {
-  function get() {
-    return api.get("/v2");
-  }
+
 
   function send(url, body) {
     return api.post(url, body);
@@ -23,13 +22,13 @@ const Moskit = (msgSuccess) => {
 
   async function gravaLead(lead) {
     try {
-      const { name, email, phone } = lead;
+      const { name, email, phone, userId } = lead;
 
       const url = "/v2/contacts";
       const body = {
         name: name,
-        createdBy: { id: 78890 },
-        responsible: { id: 78890 },
+        createdBy: { id: userId },
+        responsible: { id: userId },
         emails: email ? [{ address: email }] : null,
         phones: phone ? [{ number: phone }] : null,
       };
@@ -49,13 +48,13 @@ const Moskit = (msgSuccess) => {
 
   async function gravaNegocio(lead) {
     try {
-      const { id, name, href, leadText, contentLead } = lead;
+      const { id, name, href, leadText, contentLead, userId } = lead;
 
       const url = "/v2/deals";
       const body = {
         name,
-        createdBy: { id: 78890 },
-        responsible: { id: 78890 },
+        createdBy: { id: userId },
+        responsible: { id: userId },
         stage: { id: 232891 },
         status: "OPEN",
         contacts: [{ id: id }],
@@ -79,13 +78,13 @@ const Moskit = (msgSuccess) => {
     }
   }
 
-  async function gravaNotas({ id, description, contentLead, contentDeals }) {
+  async function gravaNotas({ id, description, contentLead, contentDeals, userId }) {
     try {
       const url = `/v2/deals/${id}/notes`;
       const body = {
         description: description,
         user: {
-          id: 78890,
+          id: userId,
         },
       };
 
@@ -100,7 +99,7 @@ const Moskit = (msgSuccess) => {
       //   }
 
       return {
-        id: contentLead.id,
+        id: contentDeals.id,
         name: contentLead.name,
         createAt: contentLead.dateCreated,
       };
@@ -110,15 +109,87 @@ const Moskit = (msgSuccess) => {
     }
   }
 
+  async function gravaUser(user) {
+    try {
+      const { name, username, phone, teamId, pipelineId, dashboardId } = user;
+
+      const url = "/v2/users";
+      const body = {
+        name,
+        username,
+        phones: phone ? [{ number: phone }] : null,
+        active: true,
+        levelConfig: false,
+        levelExport: false,
+        levelBulk: false,
+        levelDelete: false,
+        levelView: "USER",
+        levelEdit: "USER",
+        team: { id: teamId}, //48146 },
+        defaultPipeline: { id: pipelineId},//52050 },
+        defaultDashboard: { id: dashboardId},//47704 },
+        timezone: { id: 1 },
+      };
+      const response = await send(url, body);
+      console.log("response", response);
+      if (msgSuccess) return msgSuccess;
+
+      return {
+        ...user,
+        id: response.data.id,
+      };
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  async function updateUser(user) {
+    
+      const url = `/v2/users/${user.id}`;
+      delete user.id
+
+      const body = {
+        ...user,
+        levelView: "ALL",
+        levelEdit: "ALL",
+        timezone: { id: 1 },
+      };
+  
+    try{
+      const response = await  api.put(url, body);
+
+      console.log("response", response);
+
+      return {
+        ...user,
+        id: response.data.id,
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+
+  }
+
   return {
-    get() {
-      return get();
+    get(resouce) {
+      return api.get(`/v2/${resouce}`);
     },
 
     send(lead) {
       const pipeline = pipe(gravaLead, gravaNegocio, gravaNotas);
       return pipeline(lead);
     },
+
+    user(data){
+      return gravaUser(data)
+    },
+
+    userAlt(data){
+      return updateUser(data)
+    }
   };
 };
 

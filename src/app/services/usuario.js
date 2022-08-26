@@ -20,40 +20,7 @@ const UsuarioMoskit = (msgSuccess) => {
   function send(url, body) {
     return api.post(url, body);
   }
-  async function gravaUser(user) {
-    try {
-      const { name, username, phone } = user;
-
-      const url = "/v2/users";
-      const body = {
-        name: name,
-        username: username,
-        phones: phone ? [{ number: phone }] : null,
-        active: true,
-        levelConfig: false,
-        levelExport: false,
-        levelBulk: false,
-        levelDelete: false,
-        levelView: "USER",
-        levelEdit: "USER",
-        team: { id: 48146 },
-        defaultPipeline: { id: 52050 },
-        defaultDashboard: { id: 47704 },
-        timezone: { id: 1 },
-      };
-      const response = await send(url, body);
-      console.log("response", response);
-      if (msgSuccess) return msgSuccess;
-
-      return {
-        ...user,
-        id: response.data.id,
-      };
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
+  
   return {
     get() {
       return get();

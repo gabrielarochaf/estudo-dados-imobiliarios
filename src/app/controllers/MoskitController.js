@@ -5,7 +5,7 @@ const UsuarioService = require("../services/usuario");
 const { sleep } = require("../helpers");
 // const factory = require("../../../__tests__/factories");
 
-class JsonController {
+class MoskitController {
   async index(req, res) {
     //   const { email, password } = req.body;
     const { data } = await api.get("pokemon/ditto");
@@ -31,13 +31,21 @@ class JsonController {
   async store(req, res) {
     const moskit = MoskitService();
     const size = Number(req.params.size) || 5;
-    console.log("size", size);
+
+
+    const {data: users} = await moskit.get('users')
+
+    
+
+    
+ 
     try {
-      const geraLead = () =>
+      const geraLead = (userId) =>
         moskit.send({
           name: faker.name.firstName(),
           email: faker.internet.email(),
           phone: faker.phone.number(),
+          userId,
           href: faker.internet.domainName(),
           leadText: "Lead-Loja-Corretor Edificio Gold Center prontos",
           description:
@@ -48,9 +56,17 @@ class JsonController {
       let results = [];
 
       for (let i = 0; i < size; i++) {
-        const data = await geraLead();
+        const lucky = Math.floor(Math.random() * users.length)
+        const data = await geraLead(users[lucky].id);
 
-        results.push({ i, data });
+        results.push({ 
+          i, 
+          data, 
+          responsibily: {
+            id:users[lucky].id,
+            name: users[lucky].name
+          } 
+        });
 
         await sleep(2); // Esperar 2 segundos entre chamadas
       }
@@ -75,17 +91,20 @@ class JsonController {
     }
   }
 
-  async usuario(res, req) {
-    const moskit = UsuarioService();
-    // const size = Number(req.params.size) || 5;
-    const size = 2;
+  async usuario(req, res) {
+    const moskit = MoskitService();
+    const size = Number(req.params.size) || 5;
+  
 
     try {
       const geraUser = () =>
-        moskit.send({
+        moskit.user({
           name: faker.name.firstName(),
           username: faker.internet.email(),
           phone: faker.phone.number(),
+          teamId: 48146 ,
+          pipelineId: 52050 ,
+          dashboardId: 47704 ,
         });
 
       //Processo enfileirado com pausa de 2 segundos
@@ -118,6 +137,41 @@ class JsonController {
       res.status(500).json(error);
     }
   }
+
+  async update_user(req, res) {
+    const moskit = MoskitService();
+    
+    const {data: users} = await moskit.get('users')
+ 
+    try {
+      
+      let results = [];
+
+      for (let user of users) {
+       const {data} = await moskit.userAlt(user)
+
+        results.push({ id: user.id, data });
+      }
+
+      // Processo em paralelo
+
+      // const list = Array(size).fill(0).map(async (_, i) => {
+      //     const data = await geraLead()
+      //     results.push({i, data})
+      // })
+
+      // await Promise.all(list)
+      // const list = Array(size).fill(0).map((_, i) => geraLead().then(data => results.push({i, data})))
+
+      // await Promise.all(list)
+
+      res.json({users, results});
+    } catch (error) {
+      // const {response: {status, data}} = error
+
+      res.status(500).json(error);
+    }
+  }
 }
 
-module.exports = new JsonController();
+module.exports = new MoskitController();
