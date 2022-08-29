@@ -47,7 +47,7 @@ class MoskitController {
           phone: faker.phone.number(),
           userId,
           href: faker.internet.domainName(),
-          leadText: "Lead-Loja-Corretor Edificio Gold Center prontos",
+          leadText: "Lead Edificio Gold Center prontos",
           description:
             "Nome: teste\nTelefone: xx xxxx-xxxx\nEmail: teste@email.com\nImovel: Edificio Gold Center\nCategoria: prontos\nLink do site: https://catulio.adaoimoveis.com.br/imovel/prontos/5549-edificio-gold-center",
         });
@@ -105,6 +105,7 @@ class MoskitController {
           teamId: 48146 ,
           pipelineId: 52050 ,
           dashboardId: 47704 ,
+       
         });
 
       //Processo enfileirado com pausa de 2 segundos

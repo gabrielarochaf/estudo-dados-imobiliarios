@@ -150,10 +150,14 @@ const Moskit = (msgSuccess) => {
       const url = `/v2/users/${user.id}`;
       delete user.id
 
+      // Teste
+      delete user.defaultPipeline
+      delete user.defaultDashboard
+
       const body = {
         ...user,
-        levelView: "ALL",
-        levelEdit: "ALL",
+        levelView: "USER",
+        levelEdit: "USER",
         timezone: { id: 1 },
       };
   

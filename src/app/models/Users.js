@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     team: [{ id: DataTypes.STRING }],
     defaultPipeline: [{ id: DataTypes.STRING }],
     defaultDashboard: [{ id: DataTypes.STRING }],
-    timezone: [{ id: DataTypes.STRING }],
+    timezone: [{ id: DataTypes.STRING }]
+   
   });
 
   return User;

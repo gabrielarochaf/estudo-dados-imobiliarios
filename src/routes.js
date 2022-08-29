@@ -8,8 +8,9 @@ const MoskitController = require("./app/controllers/MoskitController");
 // routes.get("/teste", JsonController.index)
 // routes.get("/check", JsonController.check)
 routes.get("/", (req, res)=> {
-  res.send('hello word')
+  res.send('Projeto integração com moskit')
 })
+
 routes.get("/lead/:size(\\d+)?", MoskitController.store);
 routes.get("/user/:size(\\d+)?", MoskitController.usuario);
 routes.get("/grant", MoskitController.update_user);
