@@ -3,6 +3,7 @@ const routes = require("express").Router();
 const authMiddleware = require("./app/middleware/auth");
 const SessionController = require("./app/controllers/SessionController");
 const MoskitController = require("./app/controllers/MoskitController");
+const ImoveisController = require("./app/controllers/ImoveisController")
 
 // routes.post("/sessions", SessionController.store);
 // routes.get("/teste", JsonController.index)
@@ -14,6 +15,8 @@ routes.get("/", (req, res)=> {
 routes.get("/lead/:size(\\d+)?", MoskitController.store);
 routes.get("/user/:size(\\d+)?", MoskitController.usuario);
 routes.get("/grant", MoskitController.update_user);
+routes.get("/imoveis", ImoveisController.index);
+
 
 routes.use(authMiddleware);
 

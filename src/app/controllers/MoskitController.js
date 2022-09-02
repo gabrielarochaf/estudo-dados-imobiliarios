@@ -1,9 +1,9 @@
 const api = require("../../config/api");
 const { faker } = require("@faker-js/faker");
 const MoskitService = require("../services/moskit");
-const UsuarioService = require("../services/usuario");
 const { sleep } = require("../helpers");
 // const factory = require("../../../__tests__/factories");
+// const copyRealState = require("./ImoveisController")
 
 class MoskitController {
   async index(req, res) {
@@ -32,13 +32,12 @@ class MoskitController {
     const moskit = MoskitService();
     const size = Number(req.params.size) || 5;
 
+    let dadoImovel = []
+    dadoImovel = copyRealState.index()
+    console.log(dadoImovel)
 
     const {data: users} = await moskit.get('users')
 
-    
-
-    
- 
     try {
       const geraLead = (userId) =>
         moskit.send({
@@ -47,8 +46,8 @@ class MoskitController {
           phone: faker.phone.number(),
           userId,
           href: faker.internet.domainName(),
-          leadText: "Lead Edificio Gold Center prontos",
-          description:
+          leadText: "Lead Edificio Gold Center prontos", //Produtos
+          description: //Dados do lead
             "Nome: teste\nTelefone: xx xxxx-xxxx\nEmail: teste@email.com\nImovel: Edificio Gold Center\nCategoria: prontos\nLink do site: https://catulio.adaoimoveis.com.br/imovel/prontos/5549-edificio-gold-center",
         });
 
@@ -57,7 +56,7 @@ class MoskitController {
 
       for (let i = 0; i < size; i++) {
         const lucky = Math.floor(Math.random() * users.length)
-        const data = await geraLead(users[lucky].id);
+        const data = await geraLead(users[lucky].id); //Adicionar para produtos
 
         results.push({ 
           i, 

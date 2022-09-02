@@ -3,6 +3,8 @@ const { pipe } = require("../helpers");
 const axios = require("axios");
 // const { username } = require("../../config/database");
 
+
+
 const api = axios.create({
   baseURL: "https://api.moskitcrm.com",
   headers: {
@@ -49,7 +51,7 @@ const Moskit = (msgSuccess) => {
   async function gravaNegocio(lead) {
     try {
       const { id, name, href, leadText, contentLead, userId } = lead;
-
+   
       const url = "/v2/deals";
       const body = {
         name,
@@ -193,7 +195,9 @@ const Moskit = (msgSuccess) => {
 
     userAlt(data){
       return updateUser(data)
-    }
+    },
+
+
   };
 };
 
