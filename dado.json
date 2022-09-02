@@ -1,0 +1,26 @@
+{
+  "id": 78981,
+  "name": "Teste",
+  "username": "teste1233455@teste.com",
+  "active": true,
+  "team": {
+    "id": 48146
+  },
+  "timezone": {
+    "id": 3
+  },
+  "levelConfig": false,
+  "levelExport": false,
+  "levelBulk": false,
+  "levelDelete": false,
+  "levelView": "ALL",
+  "levelEdit": "ALL",
+  "defaultPipelineId": 52050,
+  "defaultDashboardId": 47704,
+  "defaultPipeline": {
+    "id": 52050
+  },
+  "defaultDashboard": {
+    "id": 47704
+  }
+}
