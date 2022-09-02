@@ -18,7 +18,8 @@
     "factory-girl": "^5.0.4",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.21.4"
+    "sequelize": "^6.21.4",
+    "xhr2": "^0.2.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.4.0",
