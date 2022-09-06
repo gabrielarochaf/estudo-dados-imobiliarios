@@ -11,7 +11,7 @@ module.exports = {
       uuid: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
-        unique: true,
+        primaryKey: true,
         allowNull: false,
       },
       country: {

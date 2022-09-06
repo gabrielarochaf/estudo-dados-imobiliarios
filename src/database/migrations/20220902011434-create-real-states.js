@@ -61,9 +61,11 @@ module.exports = {
         type: Sequelize.UUID,
         references: {
           model: {
+            modelName: "Address",
             tableName: "address",
             schema: "schema",
           },
+          // model: "Address",
           key: "uuid",
         },
         allowNull: true,
