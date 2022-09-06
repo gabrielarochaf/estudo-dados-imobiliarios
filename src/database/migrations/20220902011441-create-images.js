@@ -18,6 +18,7 @@ module.exports = {
         type: Sequelize.STRING,
         references: {
           model: {
+            modelName: "RealState",
             tableName: "real_states",
             schema: "schema",
           },
