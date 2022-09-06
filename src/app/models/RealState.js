@@ -1,5 +1,4 @@
 const { Sequelize } = require(".");
-const Address = require("./Address");
 
 module.exports = (sequelize, DataTypes) => {
   const RealState = sequelize.define(
@@ -22,21 +21,12 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.NOW,
       },
       owner: DataTypes.BOOLEAN,
-      address: {
-        type: DataTypes.VIRTUAL,
-        get() {
-          console.log(this);
-          return "ok";
-        },
-      },
       address_uuid: {
         type: DataTypes.UUID,
-        // defaultValue: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
         references: {
-          // This is a reference to another model
-          model: Address,
+          model: "Address",
 
-          // This is the column name of the referenced model
           key: "uuid",
           // deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },
@@ -50,34 +40,16 @@ module.exports = (sequelize, DataTypes) => {
       businessType: DataTypes.STRING,
     },
     {
-      hooks: {
-        before: {
-          all: [],
-          find: [
-            Sequelize.BelongsTo(Address, {
-              foreignKey: "uuid",
-            }),
-          ],
-        },
-      },
+      tableName: "real_states",
     }
   );
 
-  // RealState.belongsTo(Address, { as: "RealState", foreignKey: "uuid" });
-
-  // RealState.associate = function (models) {
-  //   RealState.belongsTo(models.address_uuid, {
-  //     as: "Address",
-  //     foreignKey: "uuid",
-  //   });
-  // };
-
-  // RealState.associate = function (models) {
-  //   RealState.hasOne(models.address_uuid, {
-  //     as: "Address",
-  //     foreignKey: "uuid",
-  //   });
-  // };
+  RealState.associate = (models) => {
+    RealState.belongsTo(models.Address, {
+      as: "Address",
+      foreignKey: "address_uuid",
+    });
+  };
 
   return RealState;
 };
