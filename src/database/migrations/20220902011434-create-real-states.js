@@ -9,7 +9,7 @@ module.exports = {
      */
     await queryInterface.createTable("real_states", {
       id: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(20),
         primaryKey: true,
         allowNull: false,
       },
@@ -61,9 +61,11 @@ module.exports = {
         type: Sequelize.UUID,
         references: {
           model: {
+            modelName: "Address",
             tableName: "address",
-            schema: "schema",
+            // schema: "schema",
           },
+          // model: "Address",
           key: "uuid",
         },
         allowNull: true,
@@ -89,13 +91,13 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-      price: { type: Sequelize.DOUBLE, allowNull: true },
-      business_type: {
-        type: Sequelize.STRING,
-        // type: DataTypes.ENUM,
-        // values: ["SALE",],
-        allowNull: true,
-      },
+      // price: { type: Sequelize.DOUBLE, allowNull: true },
+      // business_type: {
+      //   type: Sequelize.STRING,
+      //   // type: DataTypes.ENUM,
+      //   // values: ["SALE",],
+      //   allowNull: true,
+      // },
     });
   },
 

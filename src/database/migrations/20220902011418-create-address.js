@@ -9,9 +9,9 @@ module.exports = {
      */
     await queryInterface.createTable("address", {
       uuid: {
-        type: Sequelize.UUID,
+        type: Sequelize.CHAR(36), // FIXME: Poder ser utilizado Sequelize.UUID exeto para SQLITE
         defaultValue: Sequelize.UUIDV4,
-        unique: true,
+        primaryKey: true,
         allowNull: false,
       },
       country: {
@@ -36,15 +36,13 @@ module.exports = {
       },
       // geoLocation: {
 
-      //   precision: {
-      //     type: Sequelize.STRING,
-      //     allowNull: true,
-      //   },
-      //   location: {
-      //     lon: { type: Sequelize.DOUBLE, allowNull: true },
-      //     lat: { type: Sequelize.DOUBLE, allowNull: true },
-      //   },
-      // },
+      precision: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      location_lon: { type: Sequelize.DOUBLE, allowNull: true },
+      location_lat: { type: Sequelize.DOUBLE, allowNull: true },
+
       street: {
         type: Sequelize.STRING,
         allowNull: true,

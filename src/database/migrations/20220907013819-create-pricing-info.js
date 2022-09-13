@@ -6,16 +6,17 @@ module.exports = {
      * Add altering commands here.
      *
      * Example:
+     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("images", {
+    await queryInterface.createTable("pricing_info", {
       uuid: {
-        type: Sequelize.CHAR(36), // FIXME: Poder ser utilizado Sequelize.UUID exeto para SQLITE
+        type: Sequelize.CHAR(36),
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
         allowNull: false,
       },
       real_states_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(20),
         references: {
           model: {
             modelName: "RealState",
@@ -26,11 +27,11 @@ module.exports = {
         },
         allowNull: true,
       },
-      url_img: {
-        type: Sequelize.STRING,
-        // unique: true,
-        allowNull: true,
-      },
+
+      yearly_iptu: { type: Sequelize.INTEGER, allowNull: true },
+      price: { type: Sequelize.DOUBLE, allowNull: true },
+      business_type: { type: Sequelize.STRING, allowNull: true },
+      monthly_condo_fee: { type: Sequelize.DOUBLE, allowNull: true },
     });
   },
 
@@ -39,7 +40,8 @@ module.exports = {
      * Add reverting commands here.
      *
      * Example:
+     * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable("images");
+    await queryInterface.dropTable("pricing_info");
   },
 };
