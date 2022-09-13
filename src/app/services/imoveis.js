@@ -18,3 +18,49 @@
 //   Object.keys(item[1]).forEach((key) => (acc[key] = (acc[key] || 0) + 1));
 //   return acc;
 // }, {});
+
+const { RealState } = require("../models");
+
+class Imovel {
+  _parseAddress(address) {
+    try {
+      const {
+        precision,
+        location: { lon: location_lon, lat: location_lat },
+      } = address.geoLocation;
+
+      delete address.geoLocation;
+
+      return {
+        ...address,
+        precision,
+        location_lon,
+        location_lat,
+      };
+    } catch (e) {
+      delete address.geoLocation;
+      return address;
+    }
+  }
+
+  async persists(payload) {
+    try {
+      payload.address = this._parseAddress(payload.address);
+
+      payload.images = payload.images.map((url) => ({
+        realStateId: payload.id,
+        urlImg: url,
+      }));
+
+      const imovel = await RealState.create(payload, {
+        include: ["images", "address", "pricingInfos"],
+      });
+
+      return imovel;
+    } catch (e) {
+      throw e;
+    }
+  }
+}
+
+module.exports = new Imovel();
