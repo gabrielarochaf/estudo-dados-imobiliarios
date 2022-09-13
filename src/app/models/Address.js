@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       city: DataTypes.STRING,
       streetNumber: DataTypes.STRING,
       zone: DataTypes.STRING,
+      precision: DataTypes.STRING,
+      location_lon: DataTypes.DOUBLE,
+      location_lat: DataTypes.DOUBLE,
       // geoLocation: {
       //   precision: DataTypes.STRING,
       //   location: { lon: DataTypes.DOUBLE, lat: DataTypes.DOUBLE },
@@ -36,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
   Address.associate = (models) => {
     Address.hasMany(models.RealState, {
       as: "realStates",
-      foreignKey: "address_uuid",
+      foreignKey: "addressUuid",
     });
   };
 

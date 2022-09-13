@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.NOW,
       },
       owner: DataTypes.BOOLEAN,
-      address_uuid: {
+      addressUuid: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         references: {
@@ -31,13 +31,14 @@ module.exports = (sequelize, DataTypes) => {
           // deferrable: Deferrable.INITIALLY_IMMEDIATE,
         },
       },
+
       suites: DataTypes.INTEGER,
       publicationType: DataTypes.STRING,
       bathrooms: DataTypes.INTEGER,
       totalAreas: DataTypes.INTEGER,
       bedrooms: DataTypes.INTEGER,
-      price: DataTypes.DOUBLE,
-      businessType: DataTypes.STRING,
+      // price: DataTypes.DOUBLE,
+      // businessType: DataTypes.STRING,
     },
     {
       tableName: "real_states",
@@ -46,8 +47,18 @@ module.exports = (sequelize, DataTypes) => {
 
   RealState.associate = (models) => {
     RealState.belongsTo(models.Address, {
-      as: "Address",
-      foreignKey: "address_uuid",
+      as: "address",
+      foreignKey: "addressUuid",
+    });
+
+    RealState.hasMany(models.Image, {
+      as: "images",
+      foreignKey: "realStatesId",
+    });
+
+    RealState.hasOne(models.PricingInfo, {
+      as: "pricingInfos",
+      foreignKey: "realStatesId",
     });
   };
 
