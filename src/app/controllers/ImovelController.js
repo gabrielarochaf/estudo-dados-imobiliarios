@@ -108,7 +108,7 @@ class ImovelController {
   }
 
   async run(req, res) {
-    const startPosition = req.params.start || 2;
+    // const startPosition = req.params.start || req.params.start + 1;
     const fs = require("fs");
     const readline = require("readline");
 
@@ -126,7 +126,7 @@ class ImovelController {
       for await (const line of rl) {
         // Each line in input.txt will be successively available here as `line`.
         // ++i;
-        if (++i > startPosition) continue;
+        // if (++i > startPosition) continue;
 
         const payload = JSON.parse(line);
         await imoveisService.persists(payload);

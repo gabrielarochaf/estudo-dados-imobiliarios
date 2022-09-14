@@ -32,11 +32,7 @@ class MoskitController {
     const moskit = MoskitService();
     const size = Number(req.params.size) || 5;
 
-    let dadoImovel = []
-    dadoImovel = copyRealState.index()
-    console.log(dadoImovel)
-
-    const {data: users} = await moskit.get('users')
+    const { data: users } = await moskit.get("users");
 
     try {
       const geraLead = (userId) =>
@@ -47,7 +43,8 @@ class MoskitController {
           userId,
           href: faker.internet.domainName(),
           leadText: "Lead Edificio Gold Center prontos", //Produtos
-          description: //Dados do lead
+          //Dados do lead
+          description:
             "Nome: teste\nTelefone: xx xxxx-xxxx\nEmail: teste@email.com\nImovel: Edificio Gold Center\nCategoria: prontos\nLink do site: https://catulio.adaoimoveis.com.br/imovel/prontos/5549-edificio-gold-center",
         });
 
@@ -55,16 +52,16 @@ class MoskitController {
       let results = [];
 
       for (let i = 0; i < size; i++) {
-        const lucky = Math.floor(Math.random() * users.length)
+        const lucky = Math.floor(Math.random() * users.length);
         const data = await geraLead(users[lucky].id); //Adicionar para produtos
 
-        results.push({ 
-          i, 
-          data, 
+        results.push({
+          i,
+          data,
           responsibily: {
-            id:users[lucky].id,
-            name: users[lucky].name
-          } 
+            id: users[lucky].id,
+            name: users[lucky].name,
+          },
         });
 
         await sleep(2); // Esperar 2 segundos entre chamadas
@@ -93,7 +90,6 @@ class MoskitController {
   async usuario(req, res) {
     const moskit = MoskitService();
     const size = Number(req.params.size) || 5;
-  
 
     try {
       const geraUser = () =>
@@ -101,10 +97,9 @@ class MoskitController {
           name: faker.name.firstName(),
           username: faker.internet.email(),
           phone: faker.phone.number(),
-          teamId: 48146 ,
-          pipelineId: 52050 ,
-          dashboardId: 47704 ,
-       
+          teamId: 48146,
+          pipelineId: 52050,
+          dashboardId: 47704,
         });
 
       //Processo enfileirado com pausa de 2 segundos
@@ -140,15 +135,14 @@ class MoskitController {
 
   async update_user(req, res) {
     const moskit = MoskitService();
-    
-    const {data: users} = await moskit.get('users')
- 
+
+    const { data: users } = await moskit.get("users");
+
     try {
-      
       let results = [];
 
       for (let user of users) {
-       const {data} = await moskit.userAlt(user)
+        const { data } = await moskit.userAlt(user);
 
         results.push({ id: user.id, data });
       }
@@ -165,7 +159,7 @@ class MoskitController {
 
       // await Promise.all(list)
 
-      res.json({users, results});
+      res.json({ users, results });
     } catch (error) {
       // const {response: {status, data}} = error
 
