@@ -1,4 +1,5 @@
 const { Sequelize } = require(".");
+const { slugify } = require("../helpers");
 
 module.exports = (sequelize, DataTypes) => {
   const RealState = sequelize.define(
@@ -8,6 +9,14 @@ module.exports = (sequelize, DataTypes) => {
       usableAreas: DataTypes.INTEGER,
       description: DataTypes.STRING,
       title: DataTypes.STRING,
+      slug: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return `http://localhost:3000/imoveis/${this.id}-${slugify(
+            this.title
+          )}`;
+        },
+      },
       publisherId: DataTypes.STRING,
       unitTypes: DataTypes.STRING,
       listingStatus: DataTypes.STRING,

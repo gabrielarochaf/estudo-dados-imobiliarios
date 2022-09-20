@@ -15,10 +15,11 @@ routes.get("/", (req, res) => {
 routes.get("/lead/:size(\\d+)?", MoskitController.store);
 routes.get("/user/:size(\\d+)?", MoskitController.usuario);
 routes.get("/grant", MoskitController.update_user);
-routes.get("/imoveis/:id", ImovelController.index);
+routes.get("/imoveis/:id", ImovelController.show);
 routes.post("/imoveis", ImovelController.store);
 routes.get("/images", ImageController.index);
-routes.get("/process/:start(\\d+)?", ImovelController.run);
+routes.get("/process/:start(\\d+)?/:limit(\\d+)?", ImovelController.run);
+routes.get("/load/:count(\\d+)?", ImovelController.load);
 
 routes.use(authMiddleware);
 
