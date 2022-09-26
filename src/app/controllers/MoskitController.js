@@ -2,6 +2,7 @@ const api = require("../../config/api");
 const { faker } = require("@faker-js/faker");
 const MoskitService = require("../services/moskit");
 const { sleep } = require("../helpers");
+
 // const factory = require("../../../__tests__/factories");
 // const copyRealState = require("./ImoveisController")
 
@@ -30,34 +31,48 @@ class MoskitController {
 
   async store(req, res) {
     const moskit = MoskitService();
-    const size = Number(req.params.size) || 5;
+
+    // const size = Number(req.params.size) || 5;
+    const size = Number(req.params.size) || 1;
 
     const { data: users } = await moskit.get("users");
 
-    try {
-      const geraLead = (userId) =>
-        moskit.send({
-          name: faker.name.firstName(),
-          email: faker.internet.email(),
-          phone: faker.phone.number(),
-          userId,
-          href: faker.internet.domainName(), // "http://localhost:3000/imoveis/787c7bd19d-proximo-a-avenida-presidente-tancredo-neves",
-          leadText: "Lead Edificio Gold Center prontos", //Produtos
-          //Dados do lead
-          description:
-            "Nome: teste\nTelefone: xx xxxx-xxxx\nEmail: teste@email.com\nImovel: Edificio Gold Center\nCategoria: prontos\nLink do site: https://catulio.adaoimoveis.com.br/imovel/prontos/5549-edificio-gold-center",
-        });
+    const slug = await moskit.get_imovel();
 
+    try {
+      const geraLead = (userId, slugImovel) => {
+        const name = faker.name.firstName();
+        const email = faker.internet.email();
+        const phone = faker.phone.number();
+
+        moskit.send({
+          // name: faker.name.firstName(),
+          name: name,
+          email: email,
+          phone: phone,
+          userId,
+          href: slugImovel,
+          leadText: slugImovel.split("/"),
+          description: `Nome: ${name}\nTelefone: ${phone}\nEmail: ${email}\nImovel: ${
+            slugImovel.split("/")[4]
+          }\nLink do site: ${slugImovel}`,
+        });
+      };
       //Processo enfileirado com pausa de 2 segundos
       let results = [];
 
       for (let i = 0; i < size; i++) {
         const lucky = Math.floor(Math.random() * users.length);
-        const data = await geraLead(users[lucky].id); //Adicionar para produtos
+        const slug_imovel = Math.floor(Math.random() * slug.length);
+
+        const data = geraLead(users[lucky].id, slug[slug_imovel]); //Adicionar para produtos
 
         results.push({
           i,
           data,
+          produto: {
+            title: slug[slug_imovel].split("/")[4],
+          },
           responsibily: {
             id: users[lucky].id,
             name: users[lucky].name,
@@ -90,25 +105,34 @@ class MoskitController {
   async usuario(req, res) {
     const moskit = MoskitService();
     const size = Number(req.params.size) || 5;
-
+    const { data: teams } = await moskit.get("teams");
     try {
-      const geraUser = () =>
+      const geraUser = (teamId) =>
         moskit.user({
           name: faker.name.firstName(),
           username: faker.internet.email(),
           phone: faker.phone.number(),
-          teamId: 48146,
-          pipelineId: 52050,
-          dashboardId: 47704,
+          // teamId: 49337,
+          teamId,
+          pipelineId: 53404,
+          dashboardId: 49139, // Pega no proprio moskit (dentro de dash)
         });
 
       //Processo enfileirado com pausa de 2 segundos
       let results = [];
 
       for (let i = 0; i < size; i++) {
-        const data = await geraUser();
+        const chosedTeam = Math.floor(Math.random() * teams.length + 1);
+        const data = await geraUser(teams[chosedTeam]);
 
-        results.push({ i, data });
+        results.push({
+          i,
+          data,
+          team: {
+            id: teams[chosedTeam].id,
+            name: teams[chosedTeam].name,
+          },
+        });
 
         await sleep(2); // Esperar 2 segundos entre chamadas
       }

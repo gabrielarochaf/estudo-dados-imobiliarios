@@ -17,6 +17,7 @@ routes.get("/user/:size(\\d+)?", MoskitController.usuario);
 routes.get("/grant", MoskitController.update_user);
 routes.get("/imoveis/:id", ImovelController.show);
 routes.post("/imoveis", ImovelController.store);
+routes.get("/imoveis", ImovelController.index);
 routes.get("/images", ImageController.index);
 routes.get("/process/:start(\\d+)?/:limit(\\d+)?", ImovelController.run);
 routes.get("/load/:count(\\d+)?", ImovelController.load);

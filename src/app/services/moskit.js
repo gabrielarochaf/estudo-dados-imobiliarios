@@ -1,9 +1,8 @@
 const { pipe } = require("../helpers");
 // const api = require('../../config/api')
 const axios = require("axios");
+
 // const { username } = require("../../config/database");
-
-
 
 const api = axios.create({
   baseURL: "https://api.moskitcrm.com",
@@ -16,10 +15,18 @@ const api = axios.create({
 });
 
 const Moskit = (msgSuccess) => {
-
-
   function send(url, body) {
     return api.post(url, body);
+  }
+
+  async function get_imovel() {
+    try {
+      const response = await axios.get("http://localhost:3000/imoveis");
+      const slug_imovel = response.data.map((i) => i.slug);
+      return slug_imovel;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async function gravaLead(lead) {
@@ -51,13 +58,16 @@ const Moskit = (msgSuccess) => {
   async function gravaNegocio(lead) {
     try {
       const { id, name, href, leadText, contentLead, userId } = lead;
-   
+
+      const { data: stage } = await api.get("/v2/stages");
+      const stage_selected = Math.floor(Math.random() * stage.length);
+
       const url = "/v2/deals";
       const body = {
         name,
         createdBy: { id: userId },
         responsible: { id: userId },
-        stage: { id: 232891 },
+        stage: { id: stage[stage_selected].id },
         status: "OPEN",
         contacts: [{ id: id }],
         // entityCustomFields: [
@@ -80,7 +90,13 @@ const Moskit = (msgSuccess) => {
     }
   }
 
-  async function gravaNotas({ id, description, contentLead, contentDeals, userId }) {
+  async function gravaNotas({
+    id,
+    description,
+    contentLead,
+    contentDeals,
+    userId,
+  }) {
     try {
       const url = `/v2/deals/${id}/notes`;
       const body = {
@@ -125,11 +141,11 @@ const Moskit = (msgSuccess) => {
         levelExport: false,
         levelBulk: false,
         levelDelete: false,
-        levelView: "USER",
-        levelEdit: "USER",
-        team: { id: teamId}, //48146 },
-        defaultPipeline: { id: pipelineId},//52050 },
-        defaultDashboard: { id: dashboardId},//47704 },
+        levelView: "ALL",
+        levelEdit: "ALL",
+        team: teamId, //48146 },
+        defaultPipeline: { id: pipelineId }, //52050 },
+        defaultDashboard: { id: dashboardId }, //47704 },
         timezone: { id: 1 },
       };
       const response = await send(url, body);
@@ -146,37 +162,34 @@ const Moskit = (msgSuccess) => {
     }
   }
 
-
   async function updateUser(user) {
-    
-      const url = `/v2/users/${user.id}`;
-      delete user.id
+    const url = `/v2/users/${user.id}`;
+    delete user.id;
 
-      // Teste
-      delete user.defaultPipeline
-      delete user.defaultDashboard
+    // Teste
+    delete user.defaultPipeline;
+    delete user.defaultDashboard;
 
-      const body = {
-        ...user,
-        levelView: "USER",
-        levelEdit: "USER",
-        timezone: { id: 1 },
-      };
-  
-    try{
-      const response = await  api.put(url, body);
+    const body = {
+      ...user,
+      levelView: "USER",
+      levelEdit: "USER",
+      timezone: { id: 1 },
+    };
+
+    try {
+      const response = await api.put(url, body);
 
       console.log("response", response);
 
       return {
         ...user,
         id: response.data.id,
-      }
+      };
     } catch (error) {
       console.log(error);
       throw error;
     }
-
   }
 
   return {
@@ -189,15 +202,16 @@ const Moskit = (msgSuccess) => {
       return pipeline(lead);
     },
 
-    user(data){
-      return gravaUser(data)
+    user(data) {
+      return gravaUser(data);
     },
 
-    userAlt(data){
-      return updateUser(data)
+    userAlt(data) {
+      return updateUser(data);
     },
-
-
+    get_imovel() {
+      return get_imovel();
+    },
   };
 };
 

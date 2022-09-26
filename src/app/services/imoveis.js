@@ -20,6 +20,7 @@
 // }, {});
 
 const { RealState } = require("../models");
+const axios = require("axios");
 
 class Imovel {
   _parseAddress(address) {
